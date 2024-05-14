@@ -3,7 +3,8 @@ from tkinter import messagebox
 import os 
 import pandas as pd
 import openpyxl
-
+import tkinter.filedialog as fd
+import subprocess
 
 
 class App(tk.Tk):
@@ -42,8 +43,15 @@ class App(tk.Tk):
 
         if answer:
             self.perform_automation()
+            file_path = self.perform_automation()
             # 完了通知を表示
             messagebox.showinfo("完了", "自動入力が完了しました")
+            if file_path:
+                 # ダウンロードボタンを表示
+                self.button_open = tk.Button(self, text="Excelファイルを開く", command=lambda: self.open_excel(file_path))
+                self.button_open.pack()
+                
+            
             
     def perform_automation(self):
         file_name = self.get_file_name()
@@ -142,8 +150,10 @@ class App(tk.Tk):
                 df_names_club.to_excel(writer, sheet_name='Sheet1', index=False, startrow=0, startcol=1)
                 df_nums_combine.to_excel(writer, sheet_name='Sheet1', index=False, startrow=0, startcol=2)
                 
-        
-        
+        return 'data_with_gaps.xlsx'
+    def open_excel(self, file_path):
+        # Excelファイルを開く
+        subprocess.Popen([file_path], shell=True)    
         
 if __name__ == "__main__":
     app = App()
